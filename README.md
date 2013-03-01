@@ -1,0 +1,4 @@
+commk
+=====
+
+common makefile
