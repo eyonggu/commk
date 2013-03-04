@@ -22,7 +22,10 @@ OBJCOPY := $(TOOLCHAIN_PREFIX)objcopy
 RANLIB  := $(TOOLCHAIN_PREFIX)ranlib
 STRIP := $(TOOLCHAIN_PREFIX)strip
 
+########################################################################
+#!TOOLS
 
+SCP ?= scp
 
 #########################################################################
 #!OUTPUT VARIABLES
@@ -90,7 +93,7 @@ LDFLAGS  += $(patsubst %,-l%,$(LDLIBS))
 #########################################################################
 #!RECIPE
 
-.PHONY: all dirs clean
+.PHONY: all dirs clean install
 
 all:  dirs $(TARGET)
 
@@ -115,3 +118,5 @@ $(OBJDIR)/%.o: %.cc
 clean:
 	rm -f  $(OBJECTS) $(TARGET)
 
+install:
+	$(SCP) $(TARGET) $(DEST)
