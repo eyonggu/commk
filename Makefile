@@ -2,7 +2,7 @@
 
 PROGRAM = test
 ARCH    = powerpc
-OS      = ose
+OS      = ose (or linux)
 
 #header directory
 INCDIRS += 
