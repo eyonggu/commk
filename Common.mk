@@ -1,3 +1,9 @@
+#TODO list:
+# 1) If a header file is renamed, autodependency will not work by
+#    complaining the file not existing. 
+#    WA: make clean && make
+#
+
 #########################################################################
 #!TOOLCHAIN
 
