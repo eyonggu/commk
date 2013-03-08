@@ -64,6 +64,8 @@ CXXFLAGS += -O
 CFLAGS   += -Wall -Wextra
 CXXFLAGS += -Wall -Wextra
 
+#dialect
+CFLAGS  += -std=gnu99
 
 #########################################################################
 #!PRE-PROCESSING

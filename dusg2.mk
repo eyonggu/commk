@@ -43,8 +43,9 @@ endif
 CFLAGS   += -m32 -mhard-float -DNCP_LINUX -DNCP_BIG_ENDIAN -DPROC_PPC476 -DDEBUG --sysroot $(SYSROOT)/$(ARCH)
 CXXFLAGS += -m32 -mhard-float -DNCP_LINUX -DNCP_BIG_ENDIAN -DPROC_PPC476 -DDEBUG --sysroot $(SYSROOT)/$(ARCH)
 LDFLAGS  += --sysroot $(SYSROOT)/$(ARCH)
+LDFLAGS  += -Wl,-rpath,$(RCSIFDIR)/rcs-rhai/lib/$(ARCH)
 ifeq ($(OS), ose)
-   LDFLAGS  += -Wl,--wrap,main -Wl,-rpath,$(RCSIFDIR)/rcs-rhai/lib/$(ARCH)
+   LDFLAGS  += -Wl,--wrap,main 
 endif
 
 #for install
