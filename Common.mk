@@ -1,15 +1,7 @@
 #########################################################################
 #!TOOLCHAIN
 
-CROSSTOOLCHAIN_PATH := /app/rbs/wrtools/5.0.1d2
-
-ARCH ?= powerpc
-
-ifeq ($(ARCH), powerpc)
-   TOOLCHAIN_PREFIX := $(CROSSTOOLCHAIN_PATH)/bin/powerpc-wrs-linux-gnu-
-else
-   TOOLCHAIN_PREFIX := 
-endif
+TOOLCHAIN_PREFIX ?= 
 
 CPP := $(TOOLCHAIN_PREFIX)gcc
 CC  := $(TOOLCHAIN_PREFIX)gcc
@@ -100,6 +92,8 @@ all:  dirs $(TARGET)
 dirs:
 	@mkdir -p $(OBJDIR) $(LIBDIR) $(BINDIR)
 
+-include $(OBJECTS:.o=.d)
+
 ifeq ($(strip $(CXXFILES)),)
    $(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@ 
@@ -111,12 +105,14 @@ endif
 
 $(OBJDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -M -MT $@ $< > $(@:.o=.d)
 	
 $(OBJDIR)/%.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CFLAGS) -M -MT $@ $< > $(@:.o=.d)
 
 clean:
-	rm -f  $(OBJECTS) $(TARGET)
+	rm -f  $(OBJECTS) $(OBJECTS:.o=.d) $(TARGET)
 
 install:
 	$(SCP) $(TARGET) $(DEST)

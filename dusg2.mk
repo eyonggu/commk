@@ -1,5 +1,15 @@
 #This is DUSg2 common of Makefile
 
+CROSSTOOLCHAIN_PATH := /app/rbs/wrtools/5.0.1d2
+
+ARCH ?= powerpc
+
+ifeq ($(ARCH), powerpc)
+   TOOLCHAIN_PREFIX := $(CROSSTOOLCHAIN_PATH)/bin/powerpc-wrs-linux-gnu-
+else
+   TOOLCHAIN_PREFIX := 
+endif
+
 PROJECTHOME  = /proj/rt_tn/usr/eyonggu/tn-comps
 SYSROOT  = $(PROJECTHOME)/build/devfs/dus41/rcs-distro
 RCSIFDIR = $(PROJECTHOME)/build/devfs/dus41
@@ -39,6 +49,6 @@ endif
 
 #for install
 SCP = scp_put
-DEST = /srv/netboot/users/eyonggu/nand/bootfs/mnt/homepartition1/sirpa/software/TN-TCU_CXP9022846_1_eyonggu_udpsh_0227_4f9c4a4_20130228-1422/bin
+DEST = $(shell echo /srv/netboot/users/eyonggu/nand/bootfs/mnt/rootfs1/software/TN-TCU_*/bin)
 
 
