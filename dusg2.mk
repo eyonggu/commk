@@ -10,7 +10,7 @@ else
    TOOLCHAIN_PREFIX := 
 endif
 
-PROJECTHOME  = /proj/rt_tn/usr/eyonggu/tn-comps
+PROJECTHOME  = /proj/rt_tn/usr/${USER}/tn-comps
 SYSROOT  = $(PROJECTHOME)/build/devfs/dus41/rcs-distro
 RCSIFDIR = $(PROJECTHOME)/build/devfs/dus41
 
@@ -43,13 +43,13 @@ endif
 CFLAGS   += -m32 -mhard-float -DNCP_LINUX -DNCP_BIG_ENDIAN -DPROC_PPC476 -DDEBUG --sysroot $(SYSROOT)/$(ARCH)
 CXXFLAGS += -m32 -mhard-float -DNCP_LINUX -DNCP_BIG_ENDIAN -DPROC_PPC476 -DDEBUG --sysroot $(SYSROOT)/$(ARCH)
 LDFLAGS  += --sysroot $(SYSROOT)/$(ARCH)
-LDFLAGS  += -Wl,-rpath,$(RCSIFDIR)/rcs-rhai/lib/$(ARCH)
+#LDFLAGS  += -Wl,-rpath,$(RCSIFDIR)/rcs-rhai/lib/$(ARCH)
 ifeq ($(OS), ose)
    LDFLAGS  += -Wl,--wrap,main 
 endif
 
 #for install
 SCP = scp_put
-DEST = $(shell echo /srv/netboot/users/eyonggu/nand/bootfs/mnt/rootfs1/software/TN-TCU_*/bin)
+DEST = $(shell echo /srv/netboot/users/${USER}/nand/bootfs/mnt/rootfs1/software/TN-TCU_*/bin)
 
 
