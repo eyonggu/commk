@@ -3,6 +3,23 @@
 #    complaining the file not existing. 
 #    WA: make clean && make
 #
+#########################################################################
+#!INPUT VARIABLES
+
+#These variables should be defined
+
+#PRAGRAM  : program name if an executable is to be built
+#LIB      : library name if an library is to be built
+#LIBTYPE  : library type (static or shared)
+
+#INCDIRS  : the directory with header files
+#SRCDIRS  : the directory with source files
+#LIBDIRS  : the direcotry with libraries
+#LDLIBS   : the (dynamic) libraries to be linked
+#SLIBS    : the (static) libraries (with full path) to be linked
+#CFILES   : (opt) the individual files
+#CXXFILES : (opt) the individual files
+#EXFILES  : (opt) the individual files to be excluded
 
 #########################################################################
 #!TOOLCHAIN
@@ -28,26 +45,19 @@ SCP ?= scp
 #########################################################################
 #!OUTPUT VARIABLES
 
-TARGET = $(BINDIR)/$(PROGRAM)
+ifdef PROGRAM
+   TARGET = $(BINDIR)/$(PROGRAM)
+else #LIB
+   ifeq ($(LIBTYPE), static)
+      TARGET = $(LIBDIR)/lib$(LIB).a
+   else
+      TARGET = $(LIBDIR)/lib$(LIB).so
+   endif
+endif
 
 OBJDIR = obj/$(ARCH)
 LIBDIR = lib/$(ARCH)
 BINDIR = bin/$(ARCH)
-
-
-
-#########################################################################
-#!INPUT VARIABLES
-
-#These variables should be defined
-#INCDIRS  : the directory with header files
-#SRCDIRS  : the directory with source files
-#LIBDIRS  : the direcotry with libraries
-#LDLIBS   : the libraries to be linked
-#CFILES   : (opt) the individual files
-#CXXFILES : (opt) the individual files
-#EXFILES  : (opt) the individual files to be excluded
-
 
 #########################################################################
 #!COMMON FLAGS
@@ -67,6 +77,14 @@ CXXFLAGS += -Wall -Wextra
 #dialect
 CFLAGS  += -std=gnu99
 
+
+ifdef LIB
+   ifeq ($(LIBTYPE), dynamic)
+      CFLAGS   += -fPIC
+      CXXFLAGS += -fPIC
+   endif
+endif
+
 #########################################################################
 #!PRE-PROCESSING
 
@@ -77,18 +95,17 @@ VPATH = $(INCDIRS) $(SRCDIRS)
 CFILES   += $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c)) 
 CXXFILES += $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.cc)) 
 
-#CFILES   := $(filter-out $(EXFILES), $(CFILES))
-#CXXFILES := $(filter-out $(EXFILES), $(CXXFILES))
+#SRCFILES += $(filter-out $(EXFILES), $(CFILES))
+#SRCFILES += $(filter-out $(EXFILES), $(CXXFILES))
 
-OBJECTS  = $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(CFILES)))
+OBJECTS += $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(CFILES)))
 OBJECTS += $(patsubst %.cc,$(OBJDIR)/%.o,$(notdir $(CXXFILES)))
 
 CFLAGS   += $(patsubst %,-I%,$(INCDIRS))
 CXXFLAGS += $(patsubst %,-I%,$(INCDIRS))
 LDFLAGS  += $(patsubst %,-L%,$(LIBDIRS))
 LDFLAGS  += $(patsubst %,-l%,$(LDLIBS))
-
-
+LDFLAGS  += $(SLIBS)
 
 #########################################################################
 #!RECIPE
@@ -102,13 +119,27 @@ dirs:
 
 -include $(OBJECTS:.o=.d)
 
+ifdef PROGRAM
 ifeq ($(strip $(CXXFILES)),)
    $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@ 
+	$(CC) -o $@ $^ $(LDFLAGS) 
 else
    $(TARGET): $(OBJECTS)
-        @echo $(CFILES)
-	$(CXX) $(OBJECTS) -$(LDFLAGS) o $@ 
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+endif
+else #LIB
+   ifeq ($(LIBTYPE), static)
+      $(TARGET): $(OBJECTS)
+	$(AR) rcs $@ $^
+   else  #shared LIB
+      ifeq ($(strip $(CXXFILES)),)
+         $(TARGET): $(OBJECTS)
+		$(CC) -shared -o $@ $(LDFLAGS) $^
+      else
+         $(TARGET): $(OBJECTS)
+		$(CXX) -shared -o $@ $(LDFLAGS) $^
+      endif
+   endif
 endif
 
 $(OBJDIR)/%.o: %.c
