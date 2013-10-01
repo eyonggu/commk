@@ -148,7 +148,7 @@ $(OBJDIR)/%.o: %.c
 	
 $(OBJDIR)/%.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-	$(CXX) $(CFLAGS) -M -MT $@ $< > $(@:.o=.d)
+	$(CXX) $(CXXFLAGS) -M -MT $@ $< > $(@:.o=.d)
 
 clean:
 	rm -f  $(OBJECTS) $(OBJECTS:.o=.d) $(TARGET)
