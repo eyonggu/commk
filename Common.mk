@@ -15,7 +15,7 @@
 #INCDIRS  : the directory with header files
 #SRCDIRS  : the directory with source files
 #LIBDIRS  : the direcotry with libraries
-#LDLIBS   : the (dynamic) libraries to be linked
+#LIBS     : the (dynamic) libraries to be linked
 #SLIBS    : the (static) libraries (with full path) to be linked
 #CFILES   : (opt) the individual files
 #CXXFILES : (opt) the individual files
@@ -104,7 +104,7 @@ OBJECTS += $(patsubst %.cc,$(OBJDIR)/%.o,$(notdir $(CXXFILES)))
 CFLAGS   += $(patsubst %,-I%,$(INCDIRS))
 CXXFLAGS += $(patsubst %,-I%,$(INCDIRS))
 LDFLAGS  += $(patsubst %,-L%,$(LIBDIRS))
-LDFLAGS  += $(patsubst %,-l%,$(LDLIBS))
+LDFLAGS  += $(patsubst %,-l%,$(LIBS))
 LDFLAGS  += $(SLIBS)
 
 #########################################################################

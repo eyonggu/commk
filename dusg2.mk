@@ -37,7 +37,7 @@ endif
 
 #libaraies
 ifeq ($(OS), ose)
-   LDLIBS += linx lits xte coli sds
+   LIBS += linx lits xte coli sds
 endif
 
 CFLAGS   += -m32 -mhard-float -DNCP_LINUX -DNCP_BIG_ENDIAN -DPROC_PPC476 -DDEBUG --sysroot $(SYSROOT)/$(ARCH)
